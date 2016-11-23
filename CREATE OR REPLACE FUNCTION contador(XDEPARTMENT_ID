@@ -1,0 +1,102 @@
+CREATE OR REPLACE FUNCTION contador(XDEPARTMENT_ID IN NUMBER)
+RETURN NUMBER
+IS
+XCONTA NUMBER;
+BEGIN
+   SELECT COUNT(*) INTO XCONTA FROM EMPLOYEES WHERE DEPARTMENT_ID=XDEPARTMENT_ID;
+   RETURN XCONTA;
+END; 
+
+SELECT CONTADOR(50) FROM DUAL ;
+
+
+****************************************************************************
+CREATE OR REPLACE FUNCTION promedio(XDEPARTMENT_ID IN NUMBER)
+RETURN NUMBER
+IS
+XCONTA NUMBER;
+BEGIN
+   SELECT AVG(SALARY) INTO XCONTA FROM EMPLOYEES WHERE DEPARTMENT_ID=XDEPARTMENT_ID;
+   RETURN XCONTA;
+END; 
+
+
+
+SELECT round (promedio(50),2) FROM DUAL ;
+************************************************************************
+
+
+
+declare 
+   cursor DEPARTAMENTOS is
+   SELECT DEPARTMENT_ID , DEPARTMENT_NAME from DEPARTMENTS;
+
+   XDEPARTMENT_ID NUMBER;
+   XDEPARTMENT_NAME VARCHAR(30) ;
+
+   cursor EMPLEADOS is
+   select (FIRST_NAME||'  '||LAST_NAME) NAME ,SALARY from EMPLOYEES WHERE XDEPARTMENT_ID=DEPARTMENT_ID;
+
+   XNAME VARCHAR(50);
+   XSALARY NUMBER;
+   XNRO NUMBER;
+   XNRO_EMPLEADOS NUMBER;
+   XSUMA NUMBER;
+   XSUMATOTAL NUMBER;
+
+
+begin
+   XSUMATOTAL:=0;
+   open DEPARTAMENTOS;
+     LOOP
+
+       FETCH DEPARTAMENTOS INTO XDEPARTMENT_ID,XDEPARTMENT_NAME;
+       EXIT WHEN DEPARTAMENTOS%NOTFOUND;
+       IF CONTADOR(XDEPARTMENT_ID) >0 THEN 
+
+       dbms_output.put_line('Departamento:  '||XDEPARTMENT_NAME);
+       dbms_output.put_line('NRO EMPLEADOS:  '||CONTADOR(XDEPARTMENT_ID)||'           salario promedio  '||round (promedio(XDEPARTMENT_ID),2));
+       dbms_output.put_line('Nombre apellido             salario');
+       dbms_output.put_line('-----------------------------------');
+       XNRO:=0;
+       XSUMA:=0;
+       open EMPLEADOS;
+         LOOP
+           XNRO:=XNRO+1;
+           FETCH EMPLEADOS INTO XNAME ,XSALARY;
+           EXIT WHEN EMPLEADOS%NOTFOUND;
+           dbms_output.put_line(XNRO||'.- '||XNAME||'            '||XSALARY);
+           XSUMA:=XSUMA+XSALARY;
+         END LOOP;
+       close EMPLEADOS;
+       dbms_output.put_line('-----------------------------------');
+       dbms_output.put_line('                        SUMA:'||XSUMA);
+       dbms_output.put_line('============================================');
+       XSUMATOTAL:=XSUMATOTAL+XSUMA;
+       END IF;
+     END LOOP;
+   close DEPARTAMENTOS;
+   dbms_output.put_line('*****************************************************');
+   dbms_output.put_line('                        SUMA TOTAL:'||XSUMATOTAL);
+
+end;
+
+
+==========================
+
+CREATE TABLE ESTUDIANTE("CODEST" VARCHAR(20) PRIMARY KEY,"NOMBRES" VARCHAR(50), "PATERNO" VARCHAR(50), "MATERNO" VARCHAR(50) ,"FECHA_NAC" DATE);
+
+CREATE OR REPLACE TRIGGER NOMBRE_ORIGINAL
+BEFORE INSERT ON ESTUDIANTE
+FOR EACH ROW
+BEGIN
+   :NEW.CODEST := (SUBSTR(:NEW.PATERNO,1, 1)||SUBSTR(:NEW.MATERNO,1, 1)||SUBSTR(:NEW.NOMBRES,1, 1)||SUBSTR(:NEW.FECHA_NAC,1, 2)||SUBSTR(:NEW.FECHA_NAC,4, 2)||SUBSTR(:NEW.FECHA_NAC,7, 2));
+END;
+
+
+INSERT INTO ESTUDIANTE (NOMBRES,PATERNO,MATERNO,FECHA_NAC)VALUES('JUAN CARLOS','PEREZ','PEREZ',TO_DATE('01/12/93'));
+INSERT INTO ESTUDIANTE (NOMBRES,PATERNO,MATERNO,FECHA_NAC)VALUES('ION IMANOL','VILLARREAL','ARUQUIPA',TO_DATE('05/07/94'));
+
+
+SELECT *
+FROM ESTUDIANTE

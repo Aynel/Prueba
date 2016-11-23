@@ -1,0 +1,36 @@
+Cursores
+
+	************************
+
+DECLARE
+  CURSOR Nombre_cursor IS SELECT …        
+  // Declaración de Variables
+  xid number;
+BEGIN
+  OPEN Nombre_cursor ;
+  LOOP
+    FETCH Nombre_cursor INTO variable de recepción;
+    EXIT WHEN Nombre_cursor%NOTFOUND;
+    // Sentencias … … …
+    dbms_output.put_line(xid || xnombre || 'nro' || cant);                
+  END LOOP; 
+  CLOSE Nombre_cursor ; 
+END;
+
+	************************
+
+Declare
+  Cursor c_clientes Is SELECT codcliente, nombre, Direccion FROM cliente;
+  xcodcliente number;
+  xnombre varchar(75);
+  xdireccion varchar(75);
+Begin
+  dbms_output.put_line('Código           Nombre                   Dirección '); dbms_output.put_line('=================================='); 
+  open c_clientes;
+  Loop
+    Fetch c_clientes Into xcodcliente,xnombre,xdireccion;
+    Exit WHEN c_clientes%NOTFOUND;
+    dbms_output.put_line(xcodcliente|| '     '||xnombre|| '     '||xdireccion);
+  End Loop;
+  Close c_clientes;
+End;

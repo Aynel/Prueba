@@ -1,0 +1,27 @@
+Procedimientos
+
+	************************
+
+CREATE OR REPLACE PROCEDURE nombre_procedimeinto (dato1 IN number, dato2 OUT varchar)
+IS
+  xid number;
+BEGIN
+
+END;
+
+	************************
+
+CREATE OR REPLACE PROCEDURE SUMA_NUMEROS (primer_numero IN NUMBER, segundo_numero in NUMBER, resultado OUT NUMBER)
+IS
+BEGIN
+  resultado := primer_numero + segundo_numero;
+END SUMA_NUMEROS;
+
+	************************
+
+DECLARE
+  resultado number;
+BEGIN
+  SUMA_NUMEROS(20,30,resultado);
+  dbms_output.put_line('Resultado de la suma: ' || resultado); 
+END; 

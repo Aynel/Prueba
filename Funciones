@@ -1,0 +1,28 @@
+Funciones
+
+	************************
+
+CREATE OR REPLACE FUNCTION nombre_funcion (dato_1 IN number, ...)
+RETURN number
+IS
+ xid number;
+BEGIN
+  RETURN xid;
+END nombre_funcion;
+
+	************************
+
+CREATE OR REPLACE FUNCTION unirAB(a IN number, b IN number)
+RETURN number
+IS
+  r1 number;
+  r2 number;
+BEGIN  
+  r1 := length(TO_CHAR(b));
+  r2 := a * power(10,r1) + b;  
+  RETURN r2; 
+END unirAB;
+
+	************************
+
+Select unirAB (13, 445) From Dual;
